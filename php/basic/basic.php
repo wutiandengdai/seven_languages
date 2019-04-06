@@ -65,4 +65,92 @@
     <?php echo "Is {$val} Integer : " . is_int($val); ?><br>
     <?php echo "Is {$pi} Integer : " . is_int($pi); ?><br>
     <?php echo "Is {$pi} Numberic : " . is_numeric($pi); ?><br>
+    <br>
+    [Array]<br>
+    <?php 
+      $mixed = array(3, 4, "Litte", array("goat","bull","horse")); 
+      //php5.4 short way
+      $short = ["Sally", 5, "London"];
+    ?>
+    <?php echo $mixed[1]; ?><br>
+    <?php echo $mixed[3][2]; ?><br>
+    <?php echo $short[0]; ?><br>
+    <?php 
+      //assign value to array
+      $mixed[1] = "Road";
+      //apend at the end
+      $mixed[] = "hope";
+    ?>
+    <pre>
+      <?php echo print_r($mixed); ?>
+    </pre>
+
+    <?php
+      //Associate array , key-value
+      $assoc = array("name"=>"Sally", "age"=>5, "address"=>"London");
+      echo $assoc["name"];
+      echo "<br>";
+      $assoc["age"] = 25;
+      echo $assoc["age"];
+    ?><br>
+
+    <?php $numbers=[23, 77, 23, 104, 18]; ?>
+    Count: <?php echo count($numbers); ?><br>
+    Max: <?php echo max($numbers); ?><br>
+    Min: <?php echo min($numbers); ?><br>
+    Sort: <?php sort($numbers); echo print_r($numbers);?><br>
+    RSort: <?php rsort($numbers); echo print_r($numbers);?><br>
+    Implode: <?php $numstr = implode("*", $numbers); echo $numstr; ?><br>
+    Explode: <?php $numbers = explode("*", $numstr); echo print_r($numbers); ?><br>
+    In Array: <?php echo in_array(77, $numbers); ?><br>
+    <br>
+
+    [Boolean]<br>
+    <?php $result = false;
+      $result2 = TRUE;
+      if(is_bool($result)){
+        echo "the result is valid.";
+      }?><br>
+      <br>
+
+    [Null]<br>
+    <?php $val1 = null; $val2 = ""; 
+      $val4=0; $val5=0.0; $val6="0"; $val7=False; $val8=array();?>
+    Is-null-null: <?php echo is_null($val1);?><br>
+    Is-null-empty: <?php echo is_null($val2);?><br>
+    Is-null-nudifined: <?php echo is_null($val3);?><br>
+    Is-set-null: <?php echo isset($val1);?><br>
+    Is-set-empty: <?php echo isset($val2);?><br>
+    Is-set-undifined: <?php echo isset($val3);?><br>
+    Is-empty-null:   <?php echo empty($val1);?><br>
+    Is-empty-empty:   <?php echo empty($val2);?><br>
+    Is-empty-undifine:   <?php echo empty($val3);?><br>
+    Is-empty-0:  <?php echo empty($val4);?><br>
+    Is-empty-0.0:   <?php echo empty($val5);?><br>
+    Is-empty-"0":   <?php echo empty($val6);?><br>
+    Is-empty-false:   <?php echo empty($val7);?><br>
+    Is-empty-array:   <?php echo empty($val8);?><br>
+    <br>
+
+    [Type and Casting] <br>
+    <?php $val1 = "3"; $val2=2;?>
+    <?php echo gettype($val1);?>
+    <?php echo gettype($val2);?><br>
+    String + Integer: <?php echo gettype($val1 + $val2);?><br>
+    Settype: <?php settype($val1, "integer"); echo gettype($val1);?><br>
+    Casting: <?php 
+      //can be casted with interger/int, float, array, bool/boolean
+      $val3 = (string)$val2; 
+      echo gettype($val3);?><br>
+    <?php $val3 = (float)$val2; echo $val3; echo gettype($val3);?><br> 
+    <?php $val3 = (array)$val2; echo print_r($val3); ?><br> 
+    <?php $val3 = (bool)$val2; echo $val3; ?><br> 
+    <br>
+
+    [Constant] <br>
+    <?php
+      define("MAX_LENGTH", 980);
+      echo MAX_LENGTH;
+      //can't change the value, can't redefine.
+    ?>
 </html>
