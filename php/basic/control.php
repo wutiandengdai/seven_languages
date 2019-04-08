@@ -3,7 +3,7 @@
 
 <html lang="en">
   <head>
-    <title>Basic PHP</title>
+    <title>Control PHP</title>
   </head>
   <body>
       <?php
