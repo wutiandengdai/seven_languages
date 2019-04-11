@@ -13,6 +13,7 @@
   <h2>Main Menu</h2>
     <ul>
       <li><a href="<?php echo url_of('/member/subjects/index.php'); ?>">Subjects</a>
+      <li><a href="<?php echo url_of('/member/pages/index.php'); ?>">Pages</a>
     </ul>
   </div>
 </div>
