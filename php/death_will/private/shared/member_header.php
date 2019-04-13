@@ -6,7 +6,7 @@
 
 <html lang="en">
   <head>
-    <title>DW-<?php echo $page_title; ?></title>
+    <title>DW-<?php echo htmlspecialchars($page_title); ?></title>
     <meta charset="utf-8">
     <link rel="stylesheet" media="all" href="<?php echo url_of('/stylesheets/member.css'); ?>" />
   </head>

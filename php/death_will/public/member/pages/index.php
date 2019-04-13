@@ -18,7 +18,7 @@ $pages=[
 <div id='content'>
   <h1>Pages</h1>
   <div class='actions'>
-    <a class='action' href="">Add New Page</a>
+    <a class='action' href="<?php echo url_of('/member/pages/new.php'); ?>">Add New Page</a>
   </div>
 
   <table class='list'>
@@ -40,8 +40,8 @@ $pages=[
         <td><?php echo $page['visible']==1?'true':'false'; ?></td>
         <td><?php echo $page['title']; ?></td>
         <td><?php echo $page['author']; ?></td>
-        <td><a class='action' href="<?php echo url_of('/member/pages/view.php?id='.$page['id']); ?>">View</a></td>
-        <td><a class='action' href="">Edit</a></td>
+        <td><a class='action' href="<?php echo url_of('/member/pages/view.php?id='.h($page['id'])); ?>">View</a></td>
+        <td><a class='action' href="<?php echo url_of('/member/pages/edit.php?id='.h($page['id'])); ?>">Edit</a></td>
         <td><a class='action' href="">Delete</a></td>
     <?php } ?>
   </table>
