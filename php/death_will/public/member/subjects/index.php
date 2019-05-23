@@ -45,7 +45,7 @@
             <td><?php echo h($subject['subject_name']); ?></td>
             <td><a class="action" href="<?php echo url_of('/member/subjects/view.php?id='.$subject['id']); ?>">View</a></td>
             <td><a class="action" href="<?php echo url_of('/member/subjects/edit.php?id='.$subject['id']); ?>">Edit</a></td>
-            <td><a class="action" href="">Delete</a></td>
+            <td><a class="action" href="<?php echo url_of('/member/subjects/delete.php?id='.$subject['id']); ?>">Delete</a></td>
           </tr>
       <?php 
         } 

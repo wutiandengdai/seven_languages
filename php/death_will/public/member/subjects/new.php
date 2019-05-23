@@ -6,6 +6,8 @@
 
 <?php include(SHARED_PATH.'/member_header.php'); ?>
 
+<?php $subject_count = get_subject_count($db); ?>
+
 <div id="content"> 
   <a class="back-link" href="<?php echo url_of('/member/subjects/index.php'); ?>")>&laquo; Back to the List</a>
     
@@ -20,8 +22,12 @@
         <dt>Position</dt>
         <dd>
           <select name="position">
-            <option value="1">1</option>
-            <option value="2">2</option>
+          <?php
+            for ($i =1; $i <= $subject_count + 1; $i++){
+              echo "<option value={$i}";
+              echo  ">{$i}</option>";
+            }
+          ?>
           </select>
         </dd>
       </dl>

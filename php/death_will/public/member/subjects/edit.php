@@ -7,20 +7,23 @@
     redirect_to('/member/subjects/index.php');
   }
   $id = $_GET['id'];
-  $subject_name = '';
-  $position = '';
 
   if(is_post()){
-    $subject_name=$_POST['subject_name'] ?? '';
-    $position=$_POST['position'] ?? '1';
-    $visible=$_POST['visible']=='1' ? 'true' : 'false';
+    $subject = [];
+    $subject['id'] = $id;
+    $subject['subject_name']=$_POST['subject_name'] ?? '';
+    $subject['position']=$_POST['position'] ?? '1';
+    $subject['visible']=$_POST['visible'] ?? '0';
 
-    echo $subject_name."<br>";
-    echo $position."<br>";
-    echo $visible."<br>";
+    $result = update_subject($db, $subject);
+    if($subject){
+      redirect_to('/member/subjects/view.php?id='.$id);
+    }
   }else{
-    //redirect_to('/member/subjects/new.php');
+    $subject = get_subject_by_id($db, $id);
   }
+
+  $subject_count = get_subject_count($db);
 ?>
 
 <?php $page_title='Subject Edit';?>
@@ -40,14 +43,21 @@
     <form action="<?php echo url_of('/member/subjects/edit.php?id='.$id); ?>" method="post">
       <dl>
         <dt>Subject Name</dt>
-        <dd><input type="text" name="subject_name" value="<?php echo $subject_name; ?>"/>
+        <dd><input type="text" name="subject_name" value="<?php echo $subject['subject_name']; ?>"/>
       </dl>
       <dl>
         <dt>Position</dt>
         <dd>
           <select name="position">
-            <option value="1">1</option>
-            <option value="2">2</option>
+          <?php
+            for ($i =1; $i <= $subject_count; $i++){
+              echo "<option value={$i}";
+              if ($subject['position'] == $i){
+                echo ' selected';
+              }
+              echo  ">{$i}</option>";
+            }
+          ?>
           </select>
         </dd>
       </dl>
@@ -55,7 +65,7 @@
         <dt>Visible</dt>
         <dd>
           <input type="hidden" name="visible" value="0"/>
-          <input type="checkbox" name="visible" value="1"/>
+          <input type="checkbox" name="visible" value="1" <?php if ($subject['visible'] == 1) echo 'checked'; ?>/>
         </dd>
       </dl>
       <div id="operations">

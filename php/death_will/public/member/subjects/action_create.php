@@ -12,13 +12,17 @@
   //if(isset($_POST['submit'])){
 
   if(is_post()){
-    $subject_name=$_POST['subject_name'] ?? '';
-    $position=$_POST['position'] ?? '1';
-    $visible=$_POST['visible']=='1' ? 'true' : 'false';
+    $subject = [];
+    $subject['subject_name']=$_POST['subject_name'] ?? '';
+    $subject['position']=$_POST['position'] ?? '1';
+    $subject['visible']=$_POST['visible'] ?? '0';
 
-    echo $subject_name."<br>";
-    echo $position."<br>";
-    echo $visible."<br>";
+    $result = insert_subject($db, $subject);
+    if($result){
+      $id = mysqli_insert_id($db);
+      redirect_to('/member/subjects/view.php?id='.$id);
+    }
+
   }else{
     redirect_to('/member/subjects/new.php');
   }
