@@ -98,6 +98,76 @@
     }
   }
 
+
+  function get_page_by_id($conn, $id){
+    $query = "select * from pages where id = '".$id."'";
+    $query .= " limit 1";
+    $result = mysqli_query($conn, $query);
+
+    if_result_set($result);
+    $page = mysqli_fetch_assoc($result);
+    mysqli_free_result($result);
+    return $page;
+  }
+
+  function insert_page($conn, $page){
+    $query = "insert into pages (subject_id, title, position, visible, content) values (";
+    $query .= "'".$page['subject_id']."', ";
+    $query .= "'".$page['title']."', ";
+    $query .= "'".$page['position']."', ";
+    $query .= "'".$page['visible']."', ";
+    $query .= "'".$page['content']."')";
+
+    $result = mysqli_query($conn, $query);
+    if($result){
+      return true;
+    }else{
+      echo mysqli_error($conn);
+    }
+  }
+
+  function update_page($conn, $page){
+    $query = "update pages set ";
+    $query .= "subject_id = '".$page['subject_id']."', ";
+    $query .= "title = '".$page['title']."', ";
+    $query .= "position = '".$page['position']."', ";
+    $query .= "visible = '".$page['visible']."', ";
+    $query .= "content = '".$page['content']."' ";
+    $query .= "where id = '".$page['id']."' ";
+    $query .= "limit 1";
+
+    $result = mysqli_query($conn, $query);
+    if($result){
+      return true;
+    }else{
+      echo mysqli_error($conn);
+    }
+  }
+
+  function delete_page($conn, $id){
+    $query = "delete from pages where id = '".$id."' ";
+    $query .= "limit 1";
+
+    $result = mysqli_query($conn, $query);
+    if($result){
+      return true;
+    }else{
+      echo mysqli_error($conn);
+    }
+  }
+
+  #indicate the max position value
+  function get_page_count($conn){
+    $query = "select count(id) as count from pages where 1 = 1";
+
+    $result = mysqli_query($conn, $query);
+    if_result_set($result);
+    $count = mysqli_fetch_assoc($result);
+    mysqli_free_result($result);
+    return $count['count'];
+  }
+
+
   function db_close($conn){
     if(isset($conn)){
         mysqli_close($conn);

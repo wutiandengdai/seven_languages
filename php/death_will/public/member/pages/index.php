@@ -40,12 +40,12 @@ $pages=[
       ?>
       <tr>
         <td><?php echo h($page['position']); ?></td>
-        <td><?php echo h($page['subject_id']); ?></td>
+        <td><?php echo get_subject_by_id($db, h($page['subject_id']))['subject_name']; ?></td>
         <td><?php echo $page['visible']==1?'true':'false'; ?></td>
         <td><?php echo h($page['title']); ?></td>
         <td><a class='action' href="<?php echo url_of('/member/pages/view.php?id='.h($page['id'])); ?>">View</a></td>
         <td><a class='action' href="<?php echo url_of('/member/pages/edit.php?id='.h($page['id'])); ?>">Edit</a></td>
-        <td><a class='action' href="">Delete</a></td>
+        <td><a class='action' href="<?php echo url_of('/member/pages/delete.php?id='.h($page['id'])); ?>">Delete</a></td>
     <?php } ?>
   </table>
 </div>

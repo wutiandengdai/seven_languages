@@ -1,6 +1,9 @@
 <?php 
 require_once('../../../private/initialize.php');
 $page_title="Pages New";
+
+$page_count = get_page_count($db);
+$subjects = get_all_subjects($db);
 ?>
 
 <?php include(SHARED_PATH.'/member_header.php'); ?>
@@ -17,17 +20,22 @@ $page_title="Pages New";
         <dd><input type='text' name='title' value=''></dd>
       </dl>
       <dl>
-        <dt>Page Author</dt>
-        <dd><input type='text' name='author' value=''></dd>
+        <dt>Page Subject</dt>
+        <dd>
+          <select name = "subject_id">
+            <?php while ($row = mysqli_fetch_assoc($subjects)) { ?>
+              <option value = "<?php echo $row['id']; ?>"> <?php echo $row['subject_name']; ?></option>
+            <?php } ?>
+          </select>
+        </dd>
       </dl>
       <dl>
         <dt>Position</dt>
         <dd>
           <select name="position">
-            <option value='1'>1</option>
-            <option value='2'>2</option>
-            <option value='3'>3</option>
-            <option value='4'>4</option>
+            <?php for($i = 1; $i <= $page_count+1; $i++){ ?>
+              <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+            <?php }?>
           </select>
         </dd>
       </dl>
@@ -36,6 +44,12 @@ $page_title="Pages New";
         <dd>
            <input type="hidden" name="visible" value="0">
            <input type="checkbox" name="visible" value="1">
+        </dd>
+      </dl>
+      <dl>
+        <dt>Content</dt>
+        <dd>
+           <textarea name="content" ></textarea>
         </dd>
       </dl>
       <div id = 'operations'>
