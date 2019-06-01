@@ -23,7 +23,7 @@
   function get_subject_by_id($conn, $id){
     if(isset($conn)){
       //Single quote around the param is necessary to prevent sql injection
-      $query = "select * from subjects where id = '".$id."'";
+      $query = "select * from subjects where id = '". sqli_escape($conn,$id)."'";
       $result = mysqli_query($conn, $query);
 
       if_result_set($result);
@@ -35,9 +35,9 @@
 
   function insert_subject($conn, $subject){
     $query = "insert into subjects (subject_name, position, visible) values(";
-    $query .= "'".$subject['subject_name']."', ";
-    $query .= "'".$subject['position']."', ";
-    $query .= "'".$subject['visible']."')";
+    $query .= "'".sqli_escape($conn,$subject['subject_name'])."', ";
+    $query .= "'".sqli_escape($conn,$subject['position'])."', ";
+    $query .= "'".sqli_escape($conn,$subject['visible'])."')";
 
     $errors = validate_subject($subject);
     if(!empty($errors)){
@@ -60,10 +60,10 @@
 
   function update_subject($conn, $subject){
     $query = "update subjects set subject_name = ";
-    $query .= "'".$subject['subject_name']."', ";
-    $query .= "position = '".$subject['position']."', ";
-    $query .= "visible = '".$subject['visible']."' ";
-    $query .= "where id = '".$subject['id']."' ";
+    $query .= "'".sqli_escape($conn,$subject['subject_name'])."', ";
+    $query .= "position = '".sqli_escape($conn,$subject['position'])."', ";
+    $query .= "visible = '".sqli_escape($conn,$subject['visible'])."' ";
+    $query .= "where id = '".sqli_escape($conn,$subject['id'])."' ";
     $query .= "limit 1";  //Limit to one row only
 
     $errors = validate_subject($subject);
@@ -86,7 +86,7 @@
 
   function delete_subject($conn, $id){
     $query = "delete from subjects where id = ";
-    $query .= "'".$id."' ";
+    $query .= "'".sqli_escape($conn,$id)."' ";
     $query .= "limit 1";
 
     $result = mysqli_query($conn, $query);
@@ -108,14 +108,12 @@
     return $count['count'];
   }
 
-  function is_subject_name_unique($conn, $subject_name, $current_id="0"){
-    $query = "select count(*) as count from subjects where subject_name = '". $subject_name."'";
-    //for existing ones
-    $query .= " and id !='".$current_id."'";
+  function is_subject_name_unique($conn, $subject_name){
+    $query = "select count(*) as count from subjects where subject_name = '". sqli_escape($conn,$subject_name)."'";
     $result = mysqli_query($conn, $query);
     $count=mysqli_fetch_assoc($result);
     mysqli_free_result($result);
-    return $count['count'] === 0;
+    return $count['count'] == 0;
   }
 
   function validate_subject($subject){
@@ -156,7 +154,7 @@
 
 
   function get_page_by_id($conn, $id){
-    $query = "select * from pages where id = '".$id."'";
+    $query = "select * from pages where id = '".sqli_escape($conn,$id)."'";
     $query .= " limit 1";
     $result = mysqli_query($conn, $query);
 
@@ -168,11 +166,11 @@
 
   function insert_page($conn, $page){
     $query = "insert into pages (subject_id, title, position, visible, content) values (";
-    $query .= "'".$page['subject_id']."', ";
-    $query .= "'".$page['title']."', ";
-    $query .= "'".$page['position']."', ";
-    $query .= "'".$page['visible']."', ";
-    $query .= "'".$page['content']."')";
+    $query .= "'".sqli_escape($conn,$page['subject_id'])."', ";
+    $query .= "'".sqli_escape($conn,$page['title'])."', ";
+    $query .= "'".sqli_escape($conn,$page['position'])."', ";
+    $query .= "'".sqli_escape($conn,$page['visible'])."', ";
+    $query .= "'".sqli_escape($conn,$page['content'])."')";
 
     $errors = validate_page($page);
     if(!empty($errors)){
@@ -194,12 +192,12 @@
 
   function update_page($conn, $page){
     $query = "update pages set ";
-    $query .= "subject_id = '".$page['subject_id']."', ";
-    $query .= "title = '".$page['title']."', ";
-    $query .= "position = '".$page['position']."', ";
-    $query .= "visible = '".$page['visible']."', ";
-    $query .= "content = '".$page['content']."' ";
-    $query .= "where id = '".$page['id']."' ";
+    $query .= "subject_id = '".sqli_escape($conn,$page['subject_id'])."', ";
+    $query .= "title = '".sqli_escape($conn,$page['title'])."', ";
+    $query .= "position = '".sqli_escape($conn,$page['position'])."', ";
+    $query .= "visible = '".sqli_escape($conn,$page['visible'])."', ";
+    $query .= "content = '".sqli_escape($conn,$page['content'])."' ";
+    $query .= "where id = '".sqli_escape($conn,$page['id'])."' ";
     $query .= "limit 1";
 
     $errors = validate_page($page);
@@ -221,7 +219,7 @@
   }
 
   function delete_page($conn, $id){
-    $query = "delete from pages where id = '".$id."' ";
+    $query = "delete from pages where id = '".sqli_escape($conn,$id)."' ";
     $query .= "limit 1";
 
     $result = mysqli_query($conn, $query);
@@ -232,14 +230,12 @@
     }
   }
 
-  function is_page_title_unique($conn, $title, $current_id="0"){
-    $query = "select count(*) as count from pages where title = '". $title."'";
-    //for existing ones
-    $query .= " and id !='".$current_id."'";
+  function is_page_title_unique($conn, $title){
+    $query = "select count(*) as count from pages where title = '". sqli_escape($conn,$title)."'";
     $result = mysqli_query($conn, $query);
     $count=mysqli_fetch_assoc($result);
     mysqli_free_result($result);
-    return $count['count'] === 0;
+    return $count['count'] == 0;
   }
 
   #indicate the max position value
@@ -309,4 +305,14 @@
     }
   }
 
+  /**
+   * 1)Escape string, sanitize sql injection
+   * Exampl: http://localhost/death_will/public/member/pages/view.php?id='OR 1=1s
+   * Need to be used with the combination of single quote around all parameters
+   * 2) Convert to integer when available
+   * 3) Use PreparedStatement
+   */
+  function sqli_escape($conn, $string){
+    return mysqli_real_escape_string($conn, $string);
+  }
 ?>
