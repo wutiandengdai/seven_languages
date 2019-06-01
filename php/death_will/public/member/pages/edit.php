@@ -18,11 +18,15 @@ $page_title="Pages Edit";
     $page['id']=$id;
 
     $result = update_page($db, $page);
-    if($result){
+    //!!! has to be identical to true, otherwise, all none-false would be treated as true(including array)
+    if($result===true){
       redirect_to('/member/pages/view.php?id='.$id);
+    }else{
+      $errors = $result;
     }
   }else{
     $page = get_page_by_id($db, $id);
+    $errors = [];
   }
   $subject = get_subject_by_id($db, $page['subject_id']);
   $page_count = get_page_count($db);
@@ -37,6 +41,8 @@ $page_title="Pages Edit";
   <div class = "page edit">
     <h1>Pages Edit</h1>
     
+    <?php echo display_errors($errors); ?>
+
     <form action="<?php echo url_of('/member/pages/edit.php?id='.$id); ?>" method="post">
       <dl>
         <dt>Page Title</dt>

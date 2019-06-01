@@ -37,4 +37,19 @@
         return $_SERVER['REQUEST_METHOD'] == 'GET';
     }
 
+    //ensure the input is an array
+    function display_errors($errors=array()){
+        $output='';
+        if(!empty($errors)){
+            $output.="<div class=\"errors\">";
+            $output.="Please fix the following error:";
+            $output .= "<ul>";
+            foreach($errors as $err){
+                $output .= "<li>".h($err)."</li>";
+            }
+            $output .= "</ul>";
+            $output .= "</div>";
+        }
+        return $output;
+    }
 ?>

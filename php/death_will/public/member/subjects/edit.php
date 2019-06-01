@@ -7,6 +7,7 @@
     redirect_to('/member/subjects/index.php');
   }
   $id = $_GET['id'];
+  $errors = [];
 
   if(is_post()){
     $subject = [];
@@ -16,11 +17,16 @@
     $subject['visible']=$_POST['visible'] ?? '0';
 
     $result = update_subject($db, $subject);
-    if($subject){
+    //!!! has to be identical to true, otherwise, all none-false would be treated as true(including array)
+    if($subject===true){
       redirect_to('/member/subjects/view.php?id='.$id);
+    }else{
+      $errors=$result;
+      //var_dump($errors);
     }
   }else{
     $subject = get_subject_by_id($db, $id);
+    $errors = [];
   }
 
   $subject_count = get_subject_count($db);
@@ -35,6 +41,8 @@
   
   <div class="subject edit">
     <h1>Edit Subject</h1>
+
+    <?php echo display_errors($errors); ?>
     <?php 
     /**
      * Single page form submit

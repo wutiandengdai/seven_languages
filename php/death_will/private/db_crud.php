@@ -1,5 +1,6 @@
 <?php
   require_once('db_credentials.php');
+  require_once('validations.php');
 
   function db_connect(){
       $conn = mysqli_connect(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
@@ -38,6 +39,16 @@
     $query .= "'".$subject['position']."', ";
     $query .= "'".$subject['visible']."')";
 
+    $errors = validate_subject($subject);
+    if(!empty($errors)){
+      return $errors;
+    }else{
+      if(!is_subject_name_unique($conn, $subject['subject_name'])){
+        $errors[] = "Name already exist.";
+        return $errors;
+      }
+    }
+
     $result = mysqli_query($conn, $query);
     if($result){
       return true;
@@ -55,6 +66,16 @@
     $query .= "where id = '".$subject['id']."' ";
     $query .= "limit 1";  //Limit to one row only
 
+    $errors = validate_subject($subject);
+    if(!empty($errors)){
+      return $errors;
+    }else{
+      if(!is_subject_name_unique($conn, $subject['subject_name'])){
+        $errors[] = "Name already exist.";
+        return $errors;
+      }
+    }
+    
     $result = mysqli_query($conn, $query);
     if($result){
       return true;
@@ -87,6 +108,41 @@
     return $count['count'];
   }
 
+  function is_subject_name_unique($conn, $subject_name, $current_id="0"){
+    $query = "select count(*) as count from subjects where subject_name = '". $subject_name."'";
+    //for existing ones
+    $query .= " and id !='".$current_id."'";
+    $result = mysqli_query($conn, $query);
+    $count=mysqli_fetch_assoc($result);
+    mysqli_free_result($result);
+    return $count['count'] === 0;
+  }
+
+  function validate_subject($subject){
+    $errors=[];
+    if(is_blank($subject['subject_name'])){
+      $errors[] = "Subject name can not be blank";
+    }
+    if(!is_length_valid($subject['subject_name'], ['min'=>2, 'max'=>255])){
+      $errors[] = "Subject name length must between 2 and 255";
+    }
+
+    $position_int=(int)$subject['position'];
+    if($position_int <= 0){
+      $errors[] = "Position must be greater than 0.";
+    }
+    if($position_int >999){
+      $errors[] = "Position must be less than 999.";
+    }
+
+    $visible_str = (string)$subject['visible'];
+    if(!has_inclusion_of($visible_str, ["0","1"])){
+      $errors = "Visible must be true or false";
+    }
+    return $errors;
+  }
+
+  
   function get_all_pages($conn){
     if(isset($conn)){
       $query = "select * from pages ";
@@ -118,6 +174,16 @@
     $query .= "'".$page['visible']."', ";
     $query .= "'".$page['content']."')";
 
+    $errors = validate_page($page);
+    if(!empty($errors)){
+      return $errors;
+    }else{
+      if(!is_page_title_unique($conn, $page['title'])){
+        $errors[] = "Title already exist.";
+        return $errors;
+      }
+    }
+
     $result = mysqli_query($conn, $query);
     if($result){
       return true;
@@ -135,6 +201,16 @@
     $query .= "content = '".$page['content']."' ";
     $query .= "where id = '".$page['id']."' ";
     $query .= "limit 1";
+
+    $errors = validate_page($page);
+    if(!empty($errors)){
+      return $errors;
+    }else{
+      if(!is_page_title_unique($conn, $page['title'])){
+        $errors[] = "Title already exist.";
+        return $errors;
+      }
+    }
 
     $result = mysqli_query($conn, $query);
     if($result){
@@ -156,6 +232,16 @@
     }
   }
 
+  function is_page_title_unique($conn, $title, $current_id="0"){
+    $query = "select count(*) as count from pages where title = '". $title."'";
+    //for existing ones
+    $query .= " and id !='".$current_id."'";
+    $result = mysqli_query($conn, $query);
+    $count=mysqli_fetch_assoc($result);
+    mysqli_free_result($result);
+    return $count['count'] === 0;
+  }
+
   #indicate the max position value
   function get_page_count($conn){
     $query = "select count(id) as count from pages where 1 = 1";
@@ -166,6 +252,40 @@
     mysqli_free_result($result);
     return $count['count'];
   }
+
+  function validate_page($page){
+    $errors=[];
+    if(is_blank($page['title'])){
+      $errors[] = "Page title can not be blank";
+    }
+    if(!is_length_valid($page['title'], ['min'=>2, 'max'=>255])){
+      $errors[] = "Page title length must between 2 and 255";
+    }
+    
+    if(is_blank($page['subject_id'])){
+      $errors[] = "Subject can not be blank";
+    }
+
+    $position_int=(int)$page['position'];
+    if($position_int <= 0){
+      $errors[] = "Position must be greater than 0.";
+    }
+    if($position_int >999){
+      $errors[] = "Position must be less than 999.";
+    }
+
+    $visible_str = (string)$page['visible'];
+    if(!has_inclusion_of($visible_str, ["0","1"])){
+      $errors[] = "Visible must be true or false";
+    }
+
+    if(!is_length_valid($page['content'], ['max'=>1000])){
+      $errors[] = "Conent size can not be larger than 1000";
+    }
+
+    return $errors;
+  }
+
 
 
   function db_close($conn){
